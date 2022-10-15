@@ -169,9 +169,9 @@ const mountainMaxHeight = pseudoRandomBetween(fxrand(), .2, .6, false);
 const mountainRotationX = -45
 const mountainRotationZ = -65
 let bloomStrength = pseudoRandomBetween(fxrand(), .2, .75, false);
-const enableDownload = true
+const enableDownload = false
 const autoRotate = !isFxpreview && !enableDownload
-const autoRotateSpeed = .005
+const autoRotateSpeed = .225
 
 // Starlight: Color is monochrome and we have a high bloom & lineWidth is small
 if (!mountainColorful && bloomStrength >= .725 && gridLineWidth <= 4) {
@@ -314,7 +314,7 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 // Only provide a download function if downloads are enabled
-if (enableDownload) {
+// document.addEventListener()
   window.renderer = renderer
 
   window.downloadPreview = () => {
@@ -325,7 +325,6 @@ if (enableDownload) {
     link.click();
     document.body.removeChild(link);
   }
-}
 
 // Post Processing
 const effectComposer = new EffectComposer(renderer);
@@ -342,11 +341,16 @@ effectComposer.addPass(bloom)
 /**
  * Animate
  */
+const clock = new THREE.Clock()
+let previousTime = 0
+
 const tick = () => {
+    const elapsedTime = clock.getElapsedTime()
+
     controls.update()
 
     if (autoRotate) {
-      plane.rotation.z += autoRotateSpeed
+      plane.rotation.z = elapsedTime * autoRotateSpeed
       // plane.rotation.x += autoRotateSpeed
       // plane.rotation.y += autoRotateSpeed
     }
