@@ -69,7 +69,10 @@ class GridTexture {
     constructor({ elements, resolutionMultiplier }) {
         const texture_size = elements * resolutionMultiplier
 
-        this.canvas_texture = new OffscreenCanvas(texture_size, texture_size)
+        this.canvas_texture = document.createElement('canvas');
+        this.canvas_texture.width = texture_size
+        this.canvas_texture.height = texture_size
+        // this.canvas_texture = new OffscreenCanvas(texture_size, texture_size)
         this.context_texture = this.canvas_texture.getContext("2d")
         this.canvas_map_texture = new THREE.CanvasTexture(this.canvas_texture)
     }
@@ -121,7 +124,10 @@ class DisplacementTexture {
         laneY,
         laneWidth
     }) {
-        const canvas_displacement = new OffscreenCanvas(elements, elements)
+        // const canvas_displacement = new OffscreenCanvas(elements, elements)
+        const canvas_displacement = document.createElement('canvas');
+        canvas_displacement.width = elements
+        canvas_displacement.height = elements
         const context_displacement = canvas_displacement.getContext("2d")
 
         randomValues.forEach((random, i) => {
@@ -152,7 +158,7 @@ const cameraPositionX = -1.5;
 const cameraPositionY = 0;
 const cameraPositionZ = isFxpreview ? 2.75 : 3.25; 
 const gridElements = pseudoRandomBetween(fxrand(), 12, 48)
-const gridLineWidth = pseudoRandomBetween(fxrand(), 2, 15)
+let gridLineWidth = pseudoRandomBetween(fxrand(), 2, 15)
 let gridSaturation = 100
 const gridLightness = 10
 const gridResolutionMultiplier = gridElements * 1
@@ -177,6 +183,7 @@ const autoRotateSpeed = .225
 if (!mountainColorful && bloomStrength >= .725 && gridLineWidth <= 4) {
   gridSaturation = 0
   bloomStrength = .95
+  gridLineWidth = 4
 }
 
 window.$fxhashFeatures = {
@@ -306,7 +313,7 @@ controls.enableDamping = true
  */
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
-    preserveDrawingBuffer: enableDownload 
+    preserveDrawingBuffer: true 
 })
 renderer.shadowMap.enabled = true
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
@@ -315,16 +322,42 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 // Only provide a download function if downloads are enabled
 // document.addEventListener()
-  window.renderer = renderer
+window._downloadSource = gridTexture.canvas_texture
+// window._downloadSource = renderer.domElement
 
-  window.downloadPreview = () => {
+
+/**
+ * Download the piece by pressing s on the keyboard
+ */
+document.addEventListener("keydown", (e) => {
+  if (e.isComposing || e.code === 'KeyS') {
+    window.downloadPreview()
+    return;
+  }
+});
+
+// Or by using this function via the console
+window.downloadPreview = () => {
+
+  window._downloadSource.convertToBlob().then(blob => {
+    const reader = new FileReader()
+    const dataURL = reader.readAsDataURL(blob);
+
+    console.log(dataURL)
+
     let link = document.createElement("a");
     link.download = fxhash;
-    link.href = window.renderer.domElement.toDataURL();
+    // link.href = window._downloadSource.toDataURL();
+    link.href = dataURL
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }
+  })
+
+
+
+}
+
 
 // Post Processing
 const effectComposer = new EffectComposer(renderer);
