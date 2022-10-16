@@ -318,7 +318,7 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 // Only provide a download function if downloads are enabled
-window._downloadSource = gridTexture.canvas_texture
+window._downloadSource = renderer.domElement
 // window._downloadSource = gridTexture.canvas_texture
 
 /**
