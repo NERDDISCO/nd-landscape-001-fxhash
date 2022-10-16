@@ -154,9 +154,9 @@ class DisplacementTexture {
 
 const prng = new PRNG()
 
-const cameraPositionX = -1.5;
+const cameraPositionX = -1.5
 const cameraPositionY = 0;
-const cameraPositionZ = isFxpreview ? 2.75 : 3.25; 
+const cameraPositionZ = isFxpreview ? 2.75 : 3.45; 
 const gridElements = pseudoRandomBetween(fxrand(), 12, 48)
 let gridLineWidth = pseudoRandomBetween(fxrand(), 2, 15)
 let gridSaturation = 100
@@ -263,10 +263,10 @@ const material = new THREE.MeshStandardMaterial({
 const plane = new THREE.Mesh(geometry, material);
 
 if (isFxpreview) {
-  plane.position.x = .175 // .1
-  plane.position.y = .1 // -0.01
+  plane.position.x = .175
+  plane.position.y = .1
 } else {
-  plane.position.x = .05
+  plane.position.x = -.05
   plane.position.y = -.01
 }
 
