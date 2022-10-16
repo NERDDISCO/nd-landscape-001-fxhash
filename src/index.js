@@ -1,7 +1,7 @@
 /**
  * @license
  * nd-landscape-001 by NERDDISCO
- * Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
+ * MIT 2022 NERDDISCO
  * https://nerddis.co/nd-landscape-001
  */
 import * as THREE from 'three'
@@ -160,7 +160,7 @@ const cameraPositionZ = isFxpreview ? 2.75 : 3.45;
 const gridElements = pseudoRandomBetween(fxrand(), 12, 48)
 let gridLineWidth = pseudoRandomBetween(fxrand(), 2, 15)
 let gridSaturation = 100
-const gridLightness = 10
+const gridLightness = 30
 const gridResolutionMultiplier = gridElements * 1
 const mountains = pseudoRandomBetween(fxrand(), 50, 500);
 const mountainColorful = fxrand() > .25
@@ -227,8 +227,6 @@ const _displacementTexture = displacementTexture.generate({
     laneWidth: mountainLaneWidth
 })
 
-
-
 /**
  * Base
  */
@@ -272,7 +270,6 @@ if (isFxpreview) {
 
 plane.rotation.x = THREE.MathUtils.degToRad(mountainRotationX)
 plane.rotation.z = THREE.MathUtils.degToRad(mountainRotationZ)
-
 
 scene.add(plane);
 
@@ -321,10 +318,8 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 // Only provide a download function if downloads are enabled
-// document.addEventListener()
 window._downloadSource = gridTexture.canvas_texture
-// window._downloadSource = renderer.domElement
-
+// window._downloadSource = gridTexture.canvas_texture
 
 /**
  * Download the piece by pressing s on the keyboard
@@ -338,28 +333,18 @@ document.addEventListener("keydown", (e) => {
 
 // Or by using this function via the console
 window.downloadPreview = () => {
-
-  window._downloadSource.convertToBlob().then(blob => {
-    const reader = new FileReader()
-    const dataURL = reader.readAsDataURL(blob);
-
-    console.log(dataURL)
-
     let link = document.createElement("a");
     link.download = fxhash;
-    // link.href = window._downloadSource.toDataURL();
-    link.href = dataURL
+    link.href = window._downloadSource.toDataURL();
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  })
-
-
-
 }
 
 
-// Post Processing
+/**
+ * Add some bloom to make everything glow
+ */
 const effectComposer = new EffectComposer(renderer);
 effectComposer.setSize(sizes.width, sizes.height);
 effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
