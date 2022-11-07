@@ -125,10 +125,10 @@ class DisplacementTexture {
         laneWidth
     }) {
         // const canvas_displacement = new OffscreenCanvas(elements, elements)
-        const canvas_displacement = document.createElement('canvas');
-        canvas_displacement.width = elements
-        canvas_displacement.height = elements
-        const context_displacement = canvas_displacement.getContext("2d")
+        this.canvas_displacement = document.createElement('canvas');
+        this.canvas_displacement.width = elements
+        this.canvas_displacement.height = elements
+        const context_displacement = this.canvas_displacement.getContext("2d")
 
         randomValues.forEach((random, i) => {
             let nextRandom = 0;
@@ -146,7 +146,7 @@ class DisplacementTexture {
         context_displacement.fillStyle = laneColor;
         context_displacement.fillRect(laneX, laneY, laneWidth, elements)
 
-        const canvas_displacement_texture = new THREE.CanvasTexture(canvas_displacement)
+        const canvas_displacement_texture = new THREE.CanvasTexture(this.canvas_displacement)
 
         return canvas_displacement_texture
     }
@@ -264,7 +264,7 @@ if (isFxpreview) {
   plane.position.x = .175
   plane.position.y = .1
 } else {
-  plane.position.x = -.05
+  plane.position.x = -.025
   plane.position.y = -.01
 }
 
@@ -320,6 +320,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 // Only provide a download function if downloads are enabled
 window._downloadSource = renderer.domElement
 // window._downloadSource = gridTexture.canvas_texture
+// window._downloadSource = displacementTexture.canvas_displacement
 
 /**
  * Download the piece by pressing s on the keyboard
